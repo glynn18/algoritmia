@@ -165,27 +165,34 @@ def get_optimal_path(grid: list[list[int]]) -> tuple[int, list[tuple[int, int]]]
     :return: Tupla con el coste total mínimo y la lista de coordenadas (i, j) de la ruta.
     """
     (tot, aux) = min_path_dp(grid)
+
     N = len(grid)
     M = len(grid[0])
 
-
-    
     pila = []
-   
 
-    
-    for i in range(N-1, -1, -1):
-        for j in range(M-1, -1, -1):
-            if i==N-1 and j==M-1:
-                pila.append((i,j))
-            else:
-                if aux[i][j-1] < aux[i-1][j]:
-                    pila.append((i, j-1))
-                elif aux[i-1][j] < aux[i][j-1]:
-                    pila.append((i-1, j))
-                
+    i = N - 1
+    j = M - 1
 
-                
+    pila.append((i, j))
+
+    while i != 0 or j != 0:
+
+        if i == 0:
+            j -= 1
+        elif j == 0:
+            i -= 1
+        elif aux[i][j-1] <= aux[i-1][j]:
+            j -= 1
+        else:
+            i -= 1
+
+        pila.append((i, j))
+
+    pila.reverse()
+
+    return tot, pila
+  
 
 
 
