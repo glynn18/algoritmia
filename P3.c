@@ -69,7 +69,58 @@ def needleman_wunsch_backtracking(matrix: list[list[int]], seq1: str, seq2: str,
     :param gap: Penalización por hueco.
     :return: Tupla con (aligned_seq1, aligned_seq2, total_score).
     """
-    pass
+    N = len(matrix)
+    M = len(matrix[0])
+
+    aligned_seq1 = ""
+    aligned_seq2 = ""
+
+    i = N - 1
+    j = M - 1
+
+    while i != 0 or j != 0:
+
+        # OPCIÓN 1: Alineación / sustitución (diagonal)
+        if i > 0 and j > 0:
+
+            if seq1[j-1] == seq2[i-1]:
+                puntuacion = match
+            else:
+                puntuacion = mismatch
+
+            if matrix[i][j] == matrix[i-1][j-1] + puntuacion:
+                aligned_seq1 += seq1[j-1]
+                aligned_seq2 += seq2[i-1]
+
+                i -= 1
+                j -= 1
+                continue
+
+        # OPCIÓN 2: Hueco en Y (arriba)
+        if i > 0:
+            if matrix[i][j] == matrix[i-1][j] + gap:
+                aligned_seq1 += "-"
+                aligned_seq2 += seq2[i-1]
+
+                i -= 1
+                continue
+
+        # OPCIÓN 3: Hueco en X (izquierda)
+        if j > 0:
+            if matrix[i][j] == matrix[i][j-1] + gap:
+                aligned_seq1 += seq1[j-1]
+                aligned_seq2 += "-"
+
+                j -= 1
+                continue
+
+    aligned_seq1 = ''.join(reversed(aligned_seq1))
+    aligned_seq2 = ''.join(reversed(aligned_seq2))
+
+    total_score = matrix[N-1][M-1]
+
+    return aligned_seq1, aligned_seq2, total_score
+
 
 # I.B Alineamiento Local: Smith-Waterman
 
