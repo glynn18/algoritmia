@@ -141,7 +141,35 @@ def smith_waterman_matrix(seq1: str, seq2: str, match: int = 2, mismatch: int = 
     :param gap: Penalización por hueco.
     :return: Matriz de programación dinámica local (lista de listas de enteros).
     """
-    pass
+    N = len(seq1)
+    M = len(seq2)
+
+    # Crear matriz inicializada a ceros
+    dp = [[0 for j in range(M+1)] for i in range(N+1)]
+
+    # Rellenar la matriz por recurrencia
+    for i in range(1, N+1):
+        for j in range(1, M+1):
+
+            # OPCIÓN 1: Alineación / sustitución (diagonal)
+            if seq1[i-1] == seq2[j-1]:
+                puntuacion = match
+            else:
+                puntuacion = mismatch
+
+            diagonal = dp[i-1][j-1] + puntuacion
+
+            # OPCIÓN 2: Hueco en Y (arriba)
+            hueco_y = dp[i-1][j] + gap
+
+            # OPCIÓN 3: Hueco en X (izquierda)
+            hueco_x = dp[i][j-1] + gap
+
+            # Elegir el máximo, incluyendo el 0
+            dp[i][j] = max(0, diagonal, hueco_y, hueco_x)
+
+    return dp
+
 
 def smith_waterman_backtracking(matrix: list[list[int]], seq1: str, seq2: str, match: int = 2, mismatch: int = -1, gap: int = -1) -> tuple[str, str, int]:
     """
@@ -160,7 +188,78 @@ def smith_waterman_backtracking(matrix: list[list[int]], seq1: str, seq2: str, m
     :param gap: Penalización por hueco.
     :return: Tupla con (sub_seq1, sub_seq2, max_score).
     """
-    pass
+     N = len(matrix)
+    M = len(matrix[0])
+
+    # Buscar el máximo global de la matriz
+    max_score = 0
+    i_max = 0
+    j_max = 0
+
+    for i in range(N):
+        for j in range(M):
+            if matrix[i][j] > max_score:
+                max_score = matrix[i][j]
+                i_max = i
+                j_max = j
+
+    # Inicializar el backtracking en el máximo
+    i = i_max
+    j = j_max
+
+    aligned_seq1 = []
+    aligned_seq2 = []
+
+    # Retroceder hasta encontrar un cero
+    while matrix[i][j] != 0:
+
+        # OPCIÓN 1: Alineación / sustitución (diagonal)
+        if i > 0 and j > 0:
+
+            if seq1[i-1] == seq2[j-1]:
+                puntuacion = match
+            else:
+                puntuacion = mismatch
+
+            if matrix[i][j] == matrix[i-1][j-1] + puntuacion:
+
+                aligned_seq1.append(seq1[i-1])
+                aligned_seq2.append(seq2[j-1])
+
+                i -= 1
+                j -= 1
+                continue
+
+        # OPCIÓN 2: Hueco en Y (arriba)
+        if i > 0:
+            if matrix[i][j] == matrix[i-1][j] + gap:
+
+                aligned_seq1.append("-")
+                aligned_seq2.append(seq1[i-1])
+
+                i -= 1
+                continue
+
+        # OPCIÓN 3: Hueco en X (izquierda)
+        if j > 0:
+            if matrix[i][j] == matrix[i][j-1] + gap:
+
+                aligned_seq1.append(seq2[j-1])
+                aligned_seq2.append("-")
+
+                j -= 1
+                continue
+
+    # Invertir las alineaciones
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+
+    # Convertir las listas en cadenas
+    sub_seq1 = ''.join(aligned_seq1)
+    sub_seq2 = ''.join(aligned_seq2)
+
+    return sub_seq1, sub_seq2, max_score
+
 
 # =============================================================================
 # II. Optimización de Rutas en una Cuadrícula
