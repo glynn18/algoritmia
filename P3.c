@@ -112,12 +112,12 @@ def min_path_recursive(grid: list[list[int]], i: int, j: int) -> int:
     if i==0 and j==0:
         return grid[0][0]
     elif i == 0:
-        for k in range (0,j):
-            coste += grid[0][j]
+        for k in range (0,j+1):
+            coste += grid[0][k]
         return coste
     elif j == 0:
-        for k in range (0,i):
-            coste += grid[0][i]
+        for k in range (0,i+1):
+            coste += grid[k][0]
         return coste
     else:  #FORMULA: F(i,j) = grid[i][j] + min(F(i−1,j), F(i,j−1))
         return grid[i][j] + min(min_path_recursive(grid, i-1, j), min_path_recursive(grid, i, j-1))    #ESTÁ BIEN?????????????????????
