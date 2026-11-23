@@ -25,7 +25,32 @@ def needleman_wunsch_matrix(seq1: str, seq2: str, match: int = 2, mismatch: int 
     :param gap: Penalización por introducción de hueco (gap).
     :return: Matriz de programación dinámica (lista de listas de enteros).
     """
-    pass
+    m = (len(seq2) + 1)
+    n = (len(seq1) + 1)
+
+    matriz = [[0 for j in range (n)] for i in range (m)]
+
+    for i in range (0, m):
+        matriz[i][0] = i*gap
+    for j in range (0, n):
+        matriz[0][j] = j*gap
+
+    for i in range(1, m):
+        for j in range(1, n):
+
+            if seq1[j-1] == seq2[i-1]:
+                puntuacion = match
+            else:
+                puntuacion = mismatch
+
+            diagonal = matriz[i-1][j-1] + puntuacion
+            arriba = matriz[i-1][j] + gap
+            izquierda = matriz[i][j-1] + gap
+
+            matriz[i][j] = max(diagonal, arriba, izquierda)
+
+    return matriz     
+
 
 def needleman_wunsch_backtracking(matrix: list[list[int]], seq1: str, seq2: str, match: int = 2, mismatch: int = -1, gap: int = -1) -> tuple[str, str, int]:
     """
