@@ -120,7 +120,7 @@ def min_path_recursive(grid: list[list[int]], i: int, j: int) -> int:
             coste += grid[k][0]
         return coste
     else:  #FORMULA: F(i,j) = grid[i][j] + min(F(i−1,j), F(i,j−1))
-        return grid[i][j] + min(min_path_recursive(grid, i-1, j), min_path_recursive(grid, i, j-1))    #ESTÁ BIEN?????????????????????
+        return grid[i][j] + min(min_path_recursive(grid, i-1, j), min_path_recursive(grid, i, j-1))   
 
 
 # II.B Programación Dinámica (Enfoque Bottom-Up)
@@ -149,7 +149,7 @@ def min_path_dp(grid: list[list[int]]) -> tuple[int, list[list[int]]]:
             else:
                 aux[x][y] = grid[x][y] + min(aux[x][y-1], aux[x-1][y])
 
-    return aux[N-1][M-1], aux    #ESTA BIEN??????????
+    return aux[N-1][M-1], aux   
 
 
 # II.C Reconstrucción de la Ruta Óptima
@@ -169,9 +169,11 @@ def get_optimal_path(grid: list[list[int]]) -> tuple[int, list[tuple[int, int]]]
     M = len(grid[0])
 
 
-    coord[tuple[int, int]]
+    
     pila = []
+   
 
+    
     for i in range(N-1, -1, -1):
         for j in range(M-1, -1, -1):
             if i==N-1 and j==M-1:
@@ -181,7 +183,7 @@ def get_optimal_path(grid: list[list[int]]) -> tuple[int, list[tuple[int, int]]]
                     pila.append((i, j-1))
                 elif aux[i-1][j] < aux[i][j-1]:
                     pila.append((i-1, j))
-                #y si son iguales cuál tiene prioridad? mirar en enunciado, creemos q está por ahí
+                
 
                 
 
